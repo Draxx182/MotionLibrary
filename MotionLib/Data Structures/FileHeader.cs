@@ -17,13 +17,12 @@ namespace MotionLibrary.Data_Structures
         /// Determines the endianness of a file - Unsure if this is actually the identifier
         /// but this is usually manually written either way.
         /// </summary>
-        public short Endianness;
-        public short Filler;
+        public ushort Endianness;
 
         /// <summary>
         /// Will be four bytes in length, does *not* always determine exact file structure.
         /// </summary>
-        public Version FileVersion;
+        public uint FileVersion;
 
         /// <summary>
         /// Only some files use and write in a filesize. Usually ones with pointers at the
@@ -41,8 +40,7 @@ namespace MotionLibrary.Data_Structures
                 FileHeader fileHeader = new FileHeader();
                 fileHeader.Magic = "CAPR";
                 fileHeader.Endianness = 513;
-                fileHeader.Filler = 0;
-                fileHeader.FileVersion = new Version(7, 0, 0, 0);
+                fileHeader.FileVersion = 7;
                 fileHeader.FileSize = 0; // Still needs to be set.
 
                 return fileHeader;
@@ -57,7 +55,7 @@ namespace MotionLibrary.Data_Structures
             get
             {
                 FileHeader fileHeader = PropertyOldEngine;
-                fileHeader.FileVersion = new Version(5, 0, 0, 0);
+                fileHeader.FileVersion = 5;
 
                 return fileHeader;
             }
