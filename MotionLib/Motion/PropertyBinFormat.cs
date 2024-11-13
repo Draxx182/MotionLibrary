@@ -14,7 +14,10 @@ namespace MotionLibrary
 
         private string[] m_stringTable;
 
-
+        /// <summary>
+        /// Reads the first 16-bytes of the file.
+        /// </summary>
+        /// <param name="reader">Yarhl Data Reader.</param>
         internal virtual void ReadHeader(DataReader reader)
         {
             FileHeader header = new FileHeader();

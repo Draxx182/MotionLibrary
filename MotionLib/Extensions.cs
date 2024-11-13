@@ -9,9 +9,9 @@ namespace MotionLib
 {
     internal static class Extensions
     {
-        public static string ReadStringPointer(this DataReader reader)
+        public static string? ReadStringPointer(this DataReader reader)
         {
-            string str = null;
+            string? str = null;
             int pointer = reader.ReadInt32();
 
             if (pointer < 0)

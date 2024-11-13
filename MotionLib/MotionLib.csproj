@@ -8,7 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Property Types\" />
+    <Compile Remove="Property Types\**" />
+    <EmbeddedResource Remove="Property Types\**" />
+    <None Remove="Property Types\**" />
   </ItemGroup>
 
   <ItemGroup>
