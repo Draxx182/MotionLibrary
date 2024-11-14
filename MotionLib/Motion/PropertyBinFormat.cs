@@ -5,17 +5,34 @@ using System.Text;
 using System.Threading.Tasks;
 using Yarhl.IO;
 using MotionLibrary.Data_Structures;
+using System.Reflection.PortableExecutable;
 
 namespace MotionLibrary
 {
     public abstract class PropertyBinFormat
     {
         public FileHeader Header { get; set; }
+        //private string[] m_stringTable;
+        internal DataTables? _tables;
 
-        private string[] m_stringTable;
+        // ========================
+        // Read Property.bin
+        // ========================
 
         /// <summary>
-        /// Reads the first 16-bytes of the file.
+        /// Read a file by its DataReader.
+        /// </summary>
+        /// <param name="rd"></param>
+        internal virtual void Read(DataReader reader)
+        {
+            ReadHeader(reader);
+            ReadDataTables(reader);
+            ReadMoveData(reader);
+            //ReadStringTable(rd);
+        }
+
+        /// <summary>
+        /// Reads the first 16-bytes of the file. Should be universal.
         /// </summary>
         /// <param name="reader">Yarhl Data Reader.</param>
         internal virtual void ReadHeader(DataReader reader)
@@ -23,22 +40,16 @@ namespace MotionLibrary
             FileHeader header = new FileHeader();
 
             header.Magic = reader.ReadString(4);
-
             header.Endianness = reader.ReadUInt16();
-            reader.Stream.Position += 2;
+            reader.Stream.Position += 2; // Padding for endianess
             header.FileVersion = reader.ReadUInt32();
             header.FileSize = reader.ReadUInt32();
         }
 
-        internal virtual void Read(DataReader rd)
-        {
-            //ReadPropertyTables(rd);
-            ReadHeader(rd);
-            ReadMoveData(rd);
-           //ReadStringTable(rd);
-        }
-
-
+        /// <summary>
+        /// Reads the string table. Defunct for now, as Move Data naturally reads off its name first.
+        /// </summary>
+        /*
         internal virtual void ReadStringTable(DataReader reader)
         {
             List<string> strings = new List<string>();
@@ -60,20 +71,21 @@ namespace MotionLibrary
             }
 
             m_stringTable = strings.ToArray();
-        }
+        }*/
 
-        internal virtual void ReadMoveData(DataReader reader)
-        {
+        internal abstract void ReadMoveData(DataReader reader);
 
-        }
+        internal abstract void ReadDataTables(DataReader reader);
 
-        public abstract void ReadPropertyTables(DataReader reader);
+        // ========================
+        // Write Property.bin
+        // ========================
 
         internal virtual void Write(DataWriter wr)
         {
-            WritePropertyTables(wr);
+            WriteDataTables(wr);
         }
 
-        public abstract void WritePropertyTables(DataWriter wr);
+        internal abstract void WriteDataTables(DataWriter wr);
     }
 }

@@ -2,7 +2,7 @@
 using System.Net;
 using Yarhl.IO;
 
-namespace MotionLib
+namespace MotionLibrary
 {
     public class OEAnimProperty
     {

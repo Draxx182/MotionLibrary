@@ -1,5 +1,5 @@
 ﻿using System;
-namespace MotionLib
+namespace MotionLibrary
 {
     [Flags]
     public enum HitboxLocation1Flag : ushort

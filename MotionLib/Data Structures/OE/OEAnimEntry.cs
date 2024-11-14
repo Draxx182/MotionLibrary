@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MotionLib
+namespace MotionLibrary
 {
     public class OEAnimEntry
     {

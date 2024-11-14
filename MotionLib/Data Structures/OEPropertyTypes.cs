@@ -1,4 +1,4 @@
-﻿namespace MotionLib
+﻿namespace MotionLibrary
 {
     public enum OEPropertyType : byte
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using Yarhl.IO;
 
-namespace MotionLib
+namespace MotionLibrary
 {
     public class OEAnimPropertyHitbox : OEAnimProperty
     {

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Yarhl.IO;
 
-namespace MotionLib
+namespace MotionLibrary
 {
     internal static class Extensions
     {
