@@ -1,17 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Yarhl.IO;
 using MotionLibrary.Data_Structures;
+using MotionLibrary.Data_Structures.OE;
 
 namespace MotionLibrary
 {
     public class OldEngineFormat : PropertyBinFormat
     {
-        private const int _tableOffset = 28; // Table values are 28 bytes from the end of the file
+        private const int _tableOffset = 40; // Table values are 28 bytes from the end of the file
         public List<OEAnimEntry> Moves = new List<OEAnimEntry>();
 
         // ========================
@@ -39,6 +40,14 @@ namespace MotionLibrary
             return format;
         }
 
+        internal override void ReadDataTables(DataReader rd)
+        {
+            // Read the Data Tables at the end of the end of the file.
+            rd.Stream.Seek(Header.FileSize - _tableOffset, SeekOrigin.Begin);
+            DataTables dt = new DataTables(rd);
+            dt.ReadOldEngineTables();
+            _tables = dt;
+        }
 
         internal override void ReadMoveData(DataReader reader)
         {
@@ -60,47 +69,58 @@ namespace MotionLibrary
                 uint nextEntry = (uint)reader.Stream.Position;
 
                 //Seek to data of anim entry
-                reader.Stream.Seek(_tables.PtrMoveData + (i * 4), SeekMode.Start);
+                reader.Stream.Seek(_tables.PtrMoveData + (i * 4), SeekOrigin.Begin);
 
                 int dataPtr = reader.ReadInt32();
 
+                // Goes to the data block itself and reads its values.
                 reader.Stream.RunInPosition(
                     delegate 
                     {
-                        int unk0Val = reader.ReadInt32();
+                        entry.UnkVal0 = reader.ReadInt32();
                         int mepIdx = reader.ReadInt32();
                         uint mainTableSize = reader.ReadUInt32();
                         uint movePropertiesStart = reader.ReadUInt32();
 
-                        entry.UnkData = reader.ReadBytes(44);
+                        entry.BlendFrames = reader.ReadUInt16();
+                        entry.SpeedShift = reader.ReadUInt16();
+                        entry.UnkVal1 = reader.ReadByte();
+                        reader.SkipPadding(2);
+                        // Won't write number of shifts to reader anymore.
+                        int numOfAnimations = reader.ReadByte();
+                        reader.SkipPadding(24);
 
-                        uint propertiesStart = (uint)reader.Stream.Position;
+                        for (int k = 0; k < numOfAnimations; k++)
+                        {
+                            OEAnimStruct animStructure = new OEAnimStruct();
+                            reader.ReadInt32();
+                            animStructure.GMTName = "";
+                            animStructure.XAnalog = reader.ReadSingle();
+                            animStructure.YAnalog = reader.ReadSingle();
+                            animStructure.UnkVal1 = reader.ReadUInt16();
+                            animStructure.UnkVal2 = reader.ReadByte();
+                            reader.SkipPadding(2);
+                            entry.Animations.Add($"Animation Entry {k}", animStructure);
+                        }
+
+                        uint propertiesStart = (uint) dataPtr + movePropertiesStart;
+                        reader.Stream.Seek(propertiesStart, SeekOrigin.Begin);
 
                         short propertyUnk = reader.ReadInt16();
                         ushort propertyCount = reader.ReadUInt16();
-
                         for(int k = 0; k < propertyCount; k++)
                         {
                             OEAnimProperty property = OEAnimProperty.CreateFromReader(reader, propertiesStart);
-                            entry.Properties.Add(property);
+                            entry.Properties.Add($"Property {k} | {property}", property);
                         }
 
                     }, dataPtr);
 
                 entries.Add(entry);
-                reader.Stream.Seek(nextEntry, SeekMode.Start);
+                reader.Stream.Seek(nextEntry, SeekOrigin.Begin);
             }
 
             Moves = entries;
-        }
-
-        internal override void ReadDataTables(DataReader rd)
-        {
-            // Read the Data Tables at the end of the end of the file.
-            rd.Stream.Seek(Header.FileSize - _tableOffset, SeekMode.Start);
-            DataTables dt = new DataTables(rd);
-            dt.ReadOldEngineTables();
-            _tables = dt;
         }
 
         // ========================

@@ -29,6 +29,7 @@ namespace MotionLibrary
             ReadDataTables(reader);
             ReadMoveData(reader);
             //ReadStringTable(rd);
+            reader.Stream.Dispose();
         }
 
         /// <summary>
@@ -44,6 +45,8 @@ namespace MotionLibrary
             reader.Stream.Position += 2; // Padding for endianess
             header.FileVersion = reader.ReadUInt32();
             header.FileSize = reader.ReadUInt32();
+
+            Header = header;
         }
 
         /// <summary>
@@ -73,9 +76,9 @@ namespace MotionLibrary
             m_stringTable = strings.ToArray();
         }*/
 
-        internal abstract void ReadMoveData(DataReader reader);
-
         internal abstract void ReadDataTables(DataReader reader);
+
+        internal abstract void ReadMoveData(DataReader reader);
 
         // ========================
         // Write Property.bin

@@ -1,22 +1,16 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Net;
 using Yarhl.IO;
 
 namespace MotionLibrary
 {
+    [JsonObject(MemberSerialization.OptIn)]
     public class OEAnimProperty
     {
-        public ushort Start;
-        public ushort End;
 
-        public byte Modifier;
-
-        public byte Unk1;
-        public byte Unk2;
-
-        public OEPropertyType Type;
-
-        public int Unk3;
+        [JsonProperty("Property Data")]
+        public OEAnimPropertyGeneral propertyData;
 
         public byte[] UnreadBytes;
 
@@ -24,8 +18,7 @@ namespace MotionLibrary
         {
             byte propertyType = 0;
 
-            reader.Stream.RunInPosition(delegate { propertyType = reader.ReadByte(); }, reader.Stream.Position + 7, SeekMode.Start);
-
+            reader.Stream.RunInPosition(delegate { propertyType = reader.ReadByte(); }, reader.Stream.Position + 7, SeekOrigin.Begin);
 
             OEAnimProperty createdProperty = new OEAnimProperty();
 
@@ -45,23 +38,24 @@ namespace MotionLibrary
                     break;
             }
 
-            createdProperty.Start = reader.ReadUInt16();
-            createdProperty.End = reader.ReadUInt16();
+            createdProperty.propertyData.Start = reader.ReadUInt16();
+            createdProperty.propertyData.End = reader.ReadUInt16();
 
-            createdProperty.Modifier = reader.ReadByte();
+            createdProperty.propertyData.Modifier = reader.ReadByte();
 
-            createdProperty.Unk1 = reader.ReadByte();
-            createdProperty.Unk2 = reader.ReadByte();
+            createdProperty.propertyData.Control1 = reader.ReadByte();
+            createdProperty.propertyData.Control2 = reader.ReadByte();
 
-            createdProperty.Type = (OEPropertyType)reader.ReadByte();
+            OEPropertyType pType = (OEPropertyType)reader.ReadByte();
+            createdProperty.propertyData.Type = pType;
 
-            createdProperty.Unk3 = reader.ReadInt32();
+            createdProperty.propertyData.Control3 = reader.ReadInt32();
 
             int dataPtr = reader.ReadInt32();
             int dataAbsolutePos = (int)propertiesStart + dataPtr;
 
             if(dataPtr > 0)
-                reader.Stream.RunInPosition(delegate { createdProperty.ReadData(reader); }, dataAbsolutePos, SeekMode.Start);
+                reader.Stream.RunInPosition(delegate { createdProperty.ReadData(reader); }, dataAbsolutePos, SeekOrigin.Begin);
 
             return createdProperty;
         }
@@ -73,7 +67,7 @@ namespace MotionLibrary
 
         public override string ToString()
         {
-            return $"Property ({Type})";
+            return $"Type ({Extensions.GetEnumDescription(propertyData.Type)})";
         }
 
     }
