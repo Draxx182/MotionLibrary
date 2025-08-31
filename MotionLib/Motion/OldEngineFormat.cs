@@ -29,11 +29,9 @@ namespace MotionLibrary
             if (!File.Exists(path))
                 return null;
 
-            // Reads the file and then creates a DataStream and Reader from it.
             byte[] buf = File.ReadAllBytes(path);
             DataStream readStream = DataStreamFactory.FromArray(buf, 0, buf.Length);
             DataReader reader = new DataReader(readStream) { Endianness = EndiannessMode.BigEndian, DefaultEncoding = Encoding.GetEncoding(932) };
-            // Creates a new object and calls the superclass' read with the newly created DataReader.
             OldEngineFormat format = new OldEngineFormat();
             format.Read(reader);
 

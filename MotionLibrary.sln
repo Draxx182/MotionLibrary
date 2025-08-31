@@ -5,6 +5,8 @@ VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MotionLibrary", "MotionLib\MotionLibrary.csproj", "{FDE6FB18-DF48-4257-BE1A-A7EF10342EE4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MotionTests", "MotionTests\MotionTests.csproj", "{0B3FE550-921B-421E-B330-DE9D25E0D326}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,18 @@ Global
 		{FDE6FB18-DF48-4257-BE1A-A7EF10342EE4}.Release|ARM64.Build.0 = Release|ARM64
 		{FDE6FB18-DF48-4257-BE1A-A7EF10342EE4}.Release|x64.ActiveCfg = Release|x64
 		{FDE6FB18-DF48-4257-BE1A-A7EF10342EE4}.Release|x64.Build.0 = Release|x64
+		{0B3FE550-921B-421E-B330-DE9D25E0D326}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B3FE550-921B-421E-B330-DE9D25E0D326}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B3FE550-921B-421E-B330-DE9D25E0D326}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{0B3FE550-921B-421E-B330-DE9D25E0D326}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{0B3FE550-921B-421E-B330-DE9D25E0D326}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0B3FE550-921B-421E-B330-DE9D25E0D326}.Debug|x64.Build.0 = Debug|Any CPU
+		{0B3FE550-921B-421E-B330-DE9D25E0D326}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B3FE550-921B-421E-B330-DE9D25E0D326}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B3FE550-921B-421E-B330-DE9D25E0D326}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{0B3FE550-921B-421E-B330-DE9D25E0D326}.Release|ARM64.Build.0 = Release|Any CPU
+		{0B3FE550-921B-421E-B330-DE9D25E0D326}.Release|x64.ActiveCfg = Release|Any CPU
+		{0B3FE550-921B-421E-B330-DE9D25E0D326}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
