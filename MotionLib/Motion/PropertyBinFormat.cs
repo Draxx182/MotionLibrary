@@ -12,8 +12,9 @@ namespace MotionLibrary
     public abstract class PropertyBinFormat
     {
         public FileHeader Header { get; set; }
-        //private string[] m_stringTable;
         internal DataTables? _tables;
+        public List<String> MEPs = new List<String>();
+        public List<String> GMTs = new List<String>();
 
         // ========================
         // Read Property.bin
@@ -22,13 +23,14 @@ namespace MotionLibrary
         /// <summary>
         /// Read a file by its DataReader.
         /// </summary>
-        /// <param name="rd"></param>
+        /// <param name="reader">Yarhl Data Reader.</param>
         internal virtual void Read(DataReader reader)
         {
             ReadHeader(reader);
             ReadDataTables(reader);
+            ReadMEPList(reader);
+            ReadGMTList(reader);
             ReadMoveData(reader);
-            //ReadStringTable(rd);
             reader.Stream.Dispose();
         }
 
@@ -49,34 +51,31 @@ namespace MotionLibrary
             Header = header;
         }
 
-        /// <summary>
-        /// Reads the string table. Defunct for now, as Move Data naturally reads off its name first.
-        /// </summary>
-        /*
-        internal virtual void ReadStringTable(DataReader reader)
-        {
-            List<string> strings = new List<string>();
-
-            while(true)
-            {
-                byte[] strTableEnd = reader.ReadBytes(4);
-
-                //String table end
-                if (strTableEnd[0] == 204 &&
-                    strTableEnd[1] == 204 &&
-                    strTableEnd[2] == 204 &&
-                    strTableEnd[3] == 0)
-                    break;
-                else
-                    reader.Stream.Position -= 4;
-
-                strings.Add(reader.ReadString());
-            }
-
-            m_stringTable = strings.ToArray();
-        }*/
-
         internal abstract void ReadDataTables(DataReader reader);
+
+        internal virtual void ReadMEPList(DataReader reader)
+        {
+            if (_tables is null) throw new DataTablesNullException();
+
+            reader.Stream.Seek(_tables.PtrMEPNames);
+            for (int i = 0; i < _tables.NumMEPs; i++)
+            {
+                string mep = reader.ReadStringPointer() ?? "";
+                MEPs.Add(mep);
+            }
+        }
+
+        internal virtual void ReadGMTList(DataReader reader)
+        {
+            if (_tables is null) throw new DataTablesNullException();
+
+            reader.Stream.Seek(_tables.PtrGMTNames);
+            for (int i = 0; i < _tables.NumGMTs; i++)
+            {
+                string gmt = reader.ReadStringPointer() ?? "";
+                GMTs.Add(gmt);
+            }
+        }
 
         internal abstract void ReadMoveData(DataReader reader);
 

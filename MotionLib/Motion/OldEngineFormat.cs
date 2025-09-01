@@ -40,7 +40,6 @@ namespace MotionLibrary
 
         internal override void ReadDataTables(DataReader rd)
         {
-            // Read the Data Tables at the end of the end of the file.
             rd.Stream.Seek(Header.FileSize - _tableOffset, SeekOrigin.Begin);
             DataTables dt = new DataTables(rd);
             dt.ReadOldEngineTables();
@@ -49,15 +48,9 @@ namespace MotionLibrary
 
         internal override void ReadMoveData(DataReader reader)
         {
-            List<OEAnimEntry> entries = new List<OEAnimEntry>();
+            if (_tables is null) throw new DataTablesNullException();
 
-            // Data Tables needed for this.
-            if (_tables is null)
-            {
-                throw new DataTablesNullException();
-            }
             reader.Stream.Seek(_tables.PtrMoveNames);
-
             for (int i = 0; i < _tables.NumMoves; i++)
             {
                 // Creates new entry to add to the list.
@@ -114,11 +107,9 @@ namespace MotionLibrary
 
                     }, dataPtr);
 
-                entries.Add(entry);
+                Moves.Add(entry);
                 reader.Stream.Seek(nextEntry, SeekOrigin.Begin);
             }
-
-            Moves = entries;
         }
 
         // ========================
